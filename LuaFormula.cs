@@ -158,8 +158,6 @@ namespace LuaFormula
 
                 LuaEnvironment.luaenv.DoString(LuaCode);
 
-                Debug.Log(cacheArguments);
-
                 if (!cacheArguments) {
                     for (var i = 0; i < maxInputCount; i++)
                     {
