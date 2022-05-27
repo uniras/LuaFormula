@@ -19,7 +19,7 @@ namespace LuaFormula
         /// 実行するLuaコードを入力します。
         /// 
         /// 入力データポートにつなげたノードのデータは、
-        /// Lua上ではAにつなげたものはa Bにつなげたものはbに格納されます。
+        /// Lua上ではAにつなげたものはグローバル変数A Bにつなげたものはグローバル変数Bに格納されます。
         /// </summary>
         [Inspectable, InspectorTextArea, UnitHeaderInspectable]
         public string LuaCode { get; private set; }
@@ -38,7 +38,7 @@ namespace LuaFormula
         public ValueOutput ErrorMessage { get; private set; }
 
         /// <summary>
-        /// Luaコード内でグローバル変数resに代入した値が格納されます。
+        /// Luaコード内でグローバル変数Rに代入した値が格納されます。
         /// ただし、res変数内にテーブルを代入するとLuaTable型が格納され、
         /// そのままではVisual Scripting内でデータを扱えないので注意してください。
         /// </summary>
@@ -47,9 +47,9 @@ namespace LuaFormula
 
         /// <summary>
         /// 入力データポートに接続したデータを次のLuaFormulaノードでも使えるようにするかどうか設定します。
-        /// チェックをつけると入力データポート関係の変数a～iの内容が終了後も保持されます。
+        /// チェックをつけると入力データポート関係の変数A～Iの内容が終了後も保持されます。
         /// 
-        /// ※Luaコード内でa～iの変数の内容を変更した場合はその変更も保持されます。
+        /// ※Luaコード内でA～Iの変数の内容を変更した場合はその変更も保持されます。
         /// ※変数を保持していても次のLuaFormulaノードで入力データポートにノードを接続した場合は接続したノードデータに上書きされます。
         /// </summary>
         [Serialize]
@@ -60,7 +60,7 @@ namespace LuaFormula
 
         /// <summary>
         /// 入力データポートの数を指定できます。
-        /// 接続したノードのデータはLua環境にa～iのグローバル変数として格納されます。
+        /// 接続したノードのデータはLua環境にA～Iのグローバル変数として格納されます。
         /// 0～9の間で設定できます。
         /// </summary>
         [DoNotSerialize]
@@ -142,17 +142,17 @@ namespace LuaFormula
             {
                 LuaEnvironment.prepare();
 
-                LuaEnvironment.luaenv.Global.Set<string, object>("res", null);
+                LuaEnvironment.luaenv.Global.Set<string, object>("R", null);
 
                 for (var i = 0; i < inputCount; i++)
                 {
                     try
                     {
-                        LuaEnvironment.luaenv.Global.Set<string, object>(((char)('a' + i)).ToString(), flow.GetValue<object>(multiInputs[i]));
+                        LuaEnvironment.luaenv.Global.Set<string, object>(((char)('A' + i)).ToString(), flow.GetValue<object>(multiInputs[i]));
                     }
                     catch (MissingValuePortInputException)
                     {
-                        //LuaEnvironment.luaenv.Global.Set<string, object>(((char)('a' + i)).ToString(), null);
+                        //LuaEnvironment.luaenv.Global.Set<string, object>(((char)('A' + i)).ToString(), null);
                     }
                 }
 
@@ -163,12 +163,12 @@ namespace LuaFormula
                 if (!cacheArguments) {
                     for (var i = 0; i < maxInputCount; i++)
                     {
-                        LuaEnvironment.luaenv.Global.Set<string, object>(((char)('a' + i)).ToString(), null);
+                        LuaEnvironment.luaenv.Global.Set<string, object>(((char)('A' + i)).ToString(), null);
                     }
                 }
                 _isSuccess = true;
                 _errorMessage = "";
-                _resultValue = LuaEnvironment.luaenv.Global.Get<object>("res");
+                _resultValue = LuaEnvironment.luaenv.Global.Get<object>("R");
             }
             catch (Exception e)
             {
